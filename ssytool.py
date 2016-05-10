@@ -9,3 +9,4 @@ def gbk2utf8(s):
 
 if __name__ == '__main__':
     print utf82gbk('中文')
+    print 'miao'
