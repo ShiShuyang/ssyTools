@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-import urllib2
+import urllib2, os
 
 def utf82gbk(s):
     return s.decode('utf8').encode('gbk')
@@ -46,8 +46,17 @@ def appendText(filename, text, mode = 'a'):
 def writeText(filename, text, mode = 'w'):
     f = open(filename, mode)
     f.write(text)
-    f.close()    
+    f.close()
+
+def oswalk(path = os.getcwd()):
+    l = []
+    for dirname, _, filenames in os.walk(path):
+        l += [os.path.join(dirname, filename) for filename in filenames]
+    return l
+        
 
 if __name__ == '__main__':
     print utf82gbk('中文')
     print 'miao'
+    print oswalk()
+
