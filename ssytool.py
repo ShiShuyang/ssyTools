@@ -1,7 +1,11 @@
 # -*- coding: utf8 -*-
 import urllib2, os
 
+<<<<<<< HEAD
 __version__ = '161030'
+=======
+import urllib2, os
+>>>>>>> origin/master
 
 def utf82gbk(s): return s.decode('utf8').encode('gbk')
 def gbk2utf8(s): return s.decode('gbk').encode('utf8')
@@ -47,7 +51,14 @@ def appendText(filename, text, mode = 'a'):
 def writeText(filename, text, mode = 'w'):
     f = open(filename, mode)
     f.write(text)
-    f.close()    
+    f.close()
+
+def oswalk(path = os.getcwd()):
+    l = []
+    for dirname, _, filenames in os.walk(path):
+        l += [os.path.join(dirname, filename) for filename in filenames]
+    return l
+        
 
 def iterCellLines(filename, spliter = ',', structure = None, mode = 'r'):
     with open(filename, mode) as f:
@@ -66,7 +77,13 @@ def setup(): os.system('copy ssytool.py C:\Python27\Lib\site-packages\ssytool.py
 
 if __name__ == '__main__':    
     print utf82gbk('中文')
+<<<<<<< HEAD
     print readCellLines('test.txt', ',', [str, int, float, str])
     for line in iterCellLines('test.txt', structure = [str, int, float, str]):
         print line
     print '====='
+=======
+    print 'miao'
+    print oswalk()
+
+>>>>>>> origin/master
