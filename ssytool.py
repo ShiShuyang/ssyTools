@@ -1,11 +1,8 @@
 # -*- coding: utf8 -*-
 import urllib2, os
 
-<<<<<<< HEAD
 __version__ = '161030'
-=======
 import urllib2, os
->>>>>>> origin/master
 
 def utf82gbk(s): return s.decode('utf8').encode('gbk')
 def gbk2utf8(s): return s.decode('gbk').encode('utf8')
@@ -77,13 +74,8 @@ def setup(): os.system('copy ssytool.py C:\Python27\Lib\site-packages\ssytool.py
 
 if __name__ == '__main__':    
     print utf82gbk('中文')
-<<<<<<< HEAD
     print readCellLines('test.txt', ',', [str, int, float, str])
     for line in iterCellLines('test.txt', structure = [str, int, float, str]):
         print line
     print '====='
-=======
-    print 'miao'
-    print oswalk()
 
->>>>>>> origin/master
