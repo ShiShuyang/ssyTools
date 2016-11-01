@@ -1,18 +1,22 @@
 # -*- coding: utf8 -*-
 import urllib2, os
+__version__ = '161101'
 
-__version__ = '161030'
-import urllib2, os
-
+def setup(): os.system('copy ssytool.py C:\Python27\Lib\site-packages\ssytool.py /Y')
 def utf82gbk(s): return s.decode('utf8').encode('gbk')
 def gbk2utf8(s): return s.decode('gbk').encode('utf8')
+def u2g(s): return s.decode('utf8').encode('gbk')
+def g2u(s): return s.decode('gbk').encode('utf8')
 
-def openurl(url, timeoutTime = 10 ,timeoutFlag = True):
-    if timeoutFlag:
+def openurl(url, timeoutTime = 10 , errorFlag = ['time']):
+    if errorFlag:
         try:
             return urllib2.urlopen(url, timeout = timeoutTime).read()
-        except:
-            return openurl(url, timeloutTime, True)		
+        except Exception, e:
+            if sum([i in str(e) for i in errorFlag]):
+                return openurl(url, timeoutTime, errorFlag)
+            else:
+                raise e
     else:
         return urllib2.urlopen(url, timeout = timeoutTime).read()
 
@@ -70,12 +74,10 @@ def iterLines(filename, strip = True, mode = 'r'):
         for line in iter(f.readline, ''):
             yield line.strip() if strip else line
 
-def setup(): os.system('copy ssytool.py C:\Python27\Lib\site-packages\ssytool.py /Y')
+if __name__ == '__main__':
+    setup()
+    print openurl('https://www.sasfdsfdsdasafsdaffsdafdsasfadsfdafsadf.com/', '10', ['404'])
 
-if __name__ == '__main__':    
-    print utf82gbk('中文')
-    print readCellLines('test.txt', ',', [str, int, float, str])
-    for line in iterCellLines('test.txt', structure = [str, int, float, str]):
-        print line
-    print '====='
+
+
 
