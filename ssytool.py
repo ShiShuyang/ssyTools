@@ -42,7 +42,10 @@ def readCellLines(filename, spliter = ',', structure = None, jumpLines = 0, mode
     f.close()
     c = c[jumpLines:]
     if structure:
-        return [[j(k) for j, k in zip(structure, i.strip().split(spliter))] for i in c]
+        if type(structure) is list:
+            yield [j(k) for j, k in zip(structure, line.strip().split(spliter))]
+        else:
+            yield [structure(k) for k in line.strip().split(spliter)]
     else:
         return [i.strip().split(spliter) for i in c]
 
