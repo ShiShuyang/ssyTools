@@ -1,12 +1,60 @@
 # -*- coding: utf8 -*-
 import urllib2, os, hashlib
-__version__ = '161109'
+import math
+from datetime import datetime, timedelta
+__version__ = '161208'
 
 def setup(): os.system('copy ssytool.py C:\Python27\Lib\site-packages\ssytool.py /Y')
 def utf82gbk(s): return s.decode('utf8').encode('gbk')
 def gbk2utf8(s): return s.decode('gbk').encode('utf8')
 def u2g(s): return s.decode('utf8').encode('gbk')
 def g2u(s): return s.decode('gbk').encode('utf8')
+
+class date():    
+    def __init__(self, s):
+        self.__s = s
+        self.__t = datetime.strptime(s, '%y%m%d %H%M%S')
+    def __getattr__(self, attrname):
+        if attrname == 'datetime': return self.__t
+        if attrname == 'year': return self.__t.year%100
+        elif attrname == 'month': return self.__t.month
+        elif attrname == 'day': return self.__t.day
+        elif attrname == 'hour': return self.__t.hour
+        elif attrname == 'minute': return self.__t.minute
+        elif attrname == 'second': return self.__t.second
+        elif attrname == 'weekday': return self.__t.weekday()+1
+        elif attrname == 'tuple': return (self.__t.year%100, self.__t.month, self.__t.day, self.__t.hour, self.__t.minute, self.__t.second)
+        elif attrname == 'toString': return datetime.strftime(self.__t, '%y%m%d %H%M%S')
+        else: raise AttributeError,attrname
+    def __str__(self): return datetime.strftime(self.__t, '%y%m%d %H%M%S')
+    __repr__ = __str__
+    def __sub__(self, other):
+        if type(other) == int:
+            delta = timedelta(0, other)
+            result = self.__t - delta
+            return date(datetime.strftime(result, '%y%m%d %H%M%S'))
+        else:
+            delta = self.datetime - other.datetime
+            return int(delta.total_seconds())
+    def __add__(self, other):
+        delta = timedelta(0, other)
+        result = self.__t + delta
+        return date(datetime.strftime(result, '%y%m%d %H%M%S'))
+    def __lt__(self, other): return self.datetime < other.datetime
+    def __le__(self, other): return self.datetime <= other.datetime
+    def __gt__(self, other): return self.datetime > other.datetime
+    def __ge__(self, other): return self.datetime >= other.datetime
+    def __eq__(self, other): return self.datetime == other.datetime
+    def __nq__(self, other): return self.datetime != other.datetime
+
+def haversine(point1, point2):
+    lon1, lat1, lon2, lat2 = map(math.radians, [point1[0], point1[1], point2[0], point2[1]])    
+    dlon = lon2 - lon1   
+    dlat = lat2 - lat1   
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2  
+    c = 2 * math.asin(math.sqrt(a))   
+    r = 6371 # 地球平均半径，单位为公里  
+    return c * r * 1000
 
 def openurl(url, timeoutTime = 10 , errorFlag = ['time']):
     if errorFlag:
@@ -31,10 +79,7 @@ def readLines(filename, strip = True, jumpLines = 0, mode = 'r'):
     c = f.readlines()
     f.close()
     c = c[jumpLines:]
-    if strip:
-        return [i.strip() for i in c]
-    else:
-        return c
+    return [i.strip() for i in c] if strip else c
 
 def readCellLines(filename, spliter = ',', structure = None, jumpLines = 0, mode = 'r'):
     f = open(filename, mode)
@@ -43,9 +88,9 @@ def readCellLines(filename, spliter = ',', structure = None, jumpLines = 0, mode
     c = c[jumpLines:]
     if structure:
         if type(structure) is list:
-            yield [j(k) for j, k in zip(structure, line.strip().split(spliter))]
+            return [[j(k) for j, k in zip(structure, line.strip().split(spliter))] for line in c]
         else:
-            yield [structure(k) for k in line.strip().split(spliter)]
+            return [[structure(k) for k in line.strip().split(spliter)] for line in c]
     else:
         return [i.strip().split(spliter) for i in c]
 
@@ -86,7 +131,7 @@ def iterLines(filename, strip = True, jumpLines = 0, mode = 'r'):
         for line in iterfile:
             yield line.strip() if strip else line
 
-def formatline(l, spliter = ',', endWithEnter = True):
+def formatLine(l, spliter = ',', endWithEnter = True):
     sentence = spliter.join(map(str, l))
     return sentence + '\n' if endWithEnter else sentence
 
@@ -99,10 +144,17 @@ def fileCharacteristic(filename, length = 0):
     ans = m.hexdigest()    
     return ans
     
-        
+def viewFile(filename, limit = 10, jumplines = 0, mode = 'r'):
+    f = open(filename, mode)
+    c = ''
+    for i in xrange(jumplines): f.readline()
+    for i in xrange(limit): c += f.readline()
+    f.close()
+    return c
 
 if __name__ == '__main__':
     setup()
+    print viewFile('test.txt', 100, 3)
     for line in iterCellLines('test.txt', jumpLines = 2, structure = str):
         print line
     print fileCharacteristic('J:\BaiduYunDownload\moon.cia', 100000)
