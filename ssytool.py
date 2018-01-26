@@ -1,6 +1,8 @@
 import os, hashlib, math, multiprocessing, functools
 from datetime import datetime, timedelta
-__version__ = '171108'
+import scipy.stats
+import numpy as np
+__version__ = '180126'
 
 defaultCoding='utf8'
 class f:
@@ -27,7 +29,7 @@ class f:
         f.close()
         return c
 
-    def appandText(filename, text, encoding=defaultCoding):
+    def appendText(filename, text, encoding=defaultCoding):
         f = open(filename, 'a', encoding=encoding)
         f.write(text)
         f.close()
@@ -38,7 +40,7 @@ class f:
         f.close()
 
     def iterLines(filename, strip=True, jumpLines=0, encoding=defaultCoding):
-        with open(filename, encoding=defaultCoding) as f:
+        with open(filename, encoding=encoding) as f:
             iterfile = iter(f.readline, '')
             for i in range(jumpLines): next(iterfile)
             for line in iterfile:
@@ -74,7 +76,14 @@ def entropy(l):
         if i:
             p = 1.0*i/s
             e += p*math.log(p)
-    return e 
+    return e
+
+def boxstate(l, alpha=0.95):
+    if type(l) is list: l = np.array(l)
+    mean = l.mean()
+    std = l.std()
+    interval = scipy.stats.t.interval(alpha, len(l)-1, mean, std)
+    return mean, std, interval
 
 class geo:
     def haversine(point1, point2):
@@ -176,8 +185,8 @@ class mp:
             result.append(line)
         args = (result, ) + tuple(args) if args else (result, )
         return function(*args)           
-    def singleFile(filename, function, args=None, structure=str, delimiter=',', processNum=6, buff=5000000, jumpLines=0):
-        with open(filename, 'r') as f:
+    def singleFile(filename, function, args=None, structure=str, delimiter=',', processNum=6, buff=5000000, jumpLines=0, encoding=defaultCoding):
+        with open(filename, 'r', encoding=encoding) as f:
             for i in range(jumpLines): f.readline()
             result = []
             pool = multiprocessing.Pool(processNum)
@@ -190,7 +199,25 @@ class mp:
         return [x.get() for x in result]
     def add(l): return functools.reduce(lambda x, y: x+y, l)
         
-        
-if __name__ == '__main__':
-    print(fileCharacteristic('test.txt', 12))
 
+class filelist:
+    TaxiDriver2015 = 'F:/上海出租车/TaxiDriverOrder2015/'
+    TaxiDriver2016 = 'F:/上海出租车/TaxiDriverOrder2016/'
+    TaxiDriver2017 = 'F:/上海出租车/TaxiDriverOrder2017/'
+    TaxiTime2015 = 'F:/上海出租车/TaxiTimeOrder2015/'
+    TaxiTime2016 = 'F:/上海出租车/TaxiTimeOrder2016/'
+    TaxiTime2017 = 'F:/上海出租车/TaxiTimeOrder2017/'
+    TaxiOD = 'F:/上海出租车/出租车上下客OD对/TaxiOD/'
+    metroOD2015 = 'E:/数据/SODA/2015公交卡OD对数据/'
+    metroOD2016 = 'E:/数据/SODA/2016公交卡OD对数据/'
+    metroOD2017 = 'E:/数据/SODA/2017公交卡OD对数据/'
+    metroStation = 'E:/数据/SODA/地铁站点经纬度.csv'
+              
+class datastructure:
+    TaxiRaw = [str, int, int, int, int, geo.date, float, float, float, int, int]
+    TaxiOD = [str, geo.date, float, float, geo.date, float, float]
+    metroOD = [str, geo.metrotime, str, geo.metrotime, str]
+
+
+if __name__ == '__main__':
+    print(boxstate([10.1,10,9.8,10.5,9.7,10.1,9.9,10.2,10.3,9.9]))
