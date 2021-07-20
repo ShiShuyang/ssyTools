@@ -1,10 +1,13 @@
-import os, hashlib, math, multiprocessing, functools
+import os, hashlib, math, multiprocessing, functools, sys
 from datetime import datetime, timedelta
 import scipy.stats
 import numpy as np
-__version__ = '180126'
 
+__version__ = '180126'
 defaultCoding='utf8'
+
+os.chdir(os.path.dirname(sys.argv[0]))
+
 class f:
     def viewFile(filename, limit=10, jumplines=0, encoding=defaultCoding):
         f = open(filename, encoding=encoding)
