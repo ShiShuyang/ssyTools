@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import scipy.stats
 import numpy as np
 
-__version__ = '180126'
+__version__ = '210723'
 defaultCoding='utf8'
 
 os.chdir(os.path.dirname(sys.argv[0]))
@@ -211,10 +211,10 @@ class filelist:
     TaxiTime2016 = 'F:/上海出租车/TaxiTimeOrder2016/'
     TaxiTime2017 = 'F:/上海出租车/TaxiTimeOrder2017/'
     TaxiOD = 'F:/上海出租车/出租车上下客OD对/TaxiOD/'
-    metroOD2015 = 'E:/数据/SODA/2015公交卡OD对数据/'
-    metroOD2016 = 'E:/数据/SODA/2016公交卡OD对数据/'
-    metroOD2017 = 'E:/数据/SODA/2017公交卡OD对数据/'
-    metroStation = 'E:/数据/SODA/地铁站点经纬度.csv'
+    metroOD2015 = 'F:/SODA/2015公交卡OD对数据/'
+    metroOD2016 = 'F:/SODA/2016公交卡OD对数据/'
+    metroOD2017 = 'F:/SODA/2017公交卡OD对数据/'
+    metroStation = 'F:/SODA/地铁站点经纬度.csv'
               
 class datastructure:
     TaxiRaw = [str, int, int, int, int, geo.date, float, float, float, int, int]
